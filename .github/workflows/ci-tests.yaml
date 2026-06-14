@@ -14,26 +14,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # clona o projeto
       - name: Clonar repositorio
         uses: actions/checkout@v4
 
+      # instala o Node.js
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
 
+      # instala o Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
+
+      # instala as dependências
       - name: Instalar dependencias
-        run: yarn install --frozen-lockfile
-
+        run: yarn
+      
+      # executa os testes automatizados
+      - name: Executando testes automatizados
+        run: yarn test
+      
+      #executa os testes com o Allure
       - name: Executar testes com Allure
         run: yarn test:allure
-
+        
+      #gera o relatorio no Allure
       - name: Gerar relatorio Allure
         run: yarn allure:generate
-
-      - name: Publicar relatorio Allure
+      
+      # salva o relatório dos testes
+      - name: Salvando relatório dos testes
         uses: actions/upload-artifact@v4
+        if: ${{ always() }}
         with:
           name: allure-report
           path: allure-report/
