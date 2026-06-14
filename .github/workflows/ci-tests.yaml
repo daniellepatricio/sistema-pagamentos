@@ -6,7 +6,7 @@ on:
   # Execução por push
   push:
     branches:
-      - master
+      - main
 
   # Execução manual
   workflow_dispatch:
@@ -37,15 +37,15 @@ jobs:
         run: yarn install
 
       # 4. Executar testes com Allure
-      - name: Executar testes automatizados
+      - name: Executar Testes Automatizados
         run: yarn test:allure
 
       # 5. Gerar relatório Allure
-      - name: Gerar relatório Allure
+      - name: Gerar Relatório Allure
         run: yarn allure:generate
 
       # 6. Publicar relatório como artefato da pipeline
-      - name: Publicar relatório Allure
+      - name: Publicar Relatório Allure
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
