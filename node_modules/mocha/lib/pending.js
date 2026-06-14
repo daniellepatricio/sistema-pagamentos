@@ -1,4 +1,8 @@
-'use strict';
+"use strict";
+
+/**
+ @module Pending
+*/
 
 module.exports = Pending;
 

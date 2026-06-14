@@ -1,4 +1,9 @@
-'use strict';
+"use strict";
+
+/**
+ * @typedef {import('../runner.js')} Runner
+ */
+
 /**
  * @module Progress
  */
@@ -6,12 +11,12 @@
  * Module dependencies.
  */
 
-var Base = require('./base');
-var constants = require('../runner').constants;
+var Base = require("./base");
+var constants = require("../runner").constants;
 var EVENT_RUN_BEGIN = constants.EVENT_RUN_BEGIN;
 var EVENT_TEST_END = constants.EVENT_TEST_END;
 var EVENT_RUN_END = constants.EVENT_RUN_END;
-var inherits = require('../utils').inherits;
+var inherits = require("../utils").inherits;
 var color = Base.color;
 var cursor = Base.cursor;
 
@@ -50,20 +55,20 @@ function Progress(runner, options) {
   options = options || {};
   var reporterOptions = options.reporterOptions || {};
 
-  options.open = reporterOptions.open || '[';
-  options.complete = reporterOptions.complete || '▬';
+  options.open = reporterOptions.open || "[";
+  options.complete = reporterOptions.complete || "▬";
   options.incomplete = reporterOptions.incomplete || Base.symbols.dot;
-  options.close = reporterOptions.close || ']';
+  options.close = reporterOptions.close || "]";
   options.verbose = reporterOptions.verbose || false;
 
   // tests started
-  runner.on(EVENT_RUN_BEGIN, function() {
-    process.stdout.write('\n');
+  runner.on(EVENT_RUN_BEGIN, function () {
+    process.stdout.write("\n");
     cursor.hide();
   });
 
   // tests complete
-  runner.on(EVENT_TEST_END, function() {
+  runner.on(EVENT_TEST_END, function () {
     complete++;
 
     var percent = complete / total;
@@ -77,21 +82,21 @@ function Progress(runner, options) {
     lastN = n;
 
     cursor.CR();
-    process.stdout.write('\u001b[J');
-    process.stdout.write(color('progress', '  ' + options.open));
+    process.stdout.write("\u001b[J");
+    process.stdout.write(color("progress", "  " + options.open));
     process.stdout.write(Array(n).join(options.complete));
     process.stdout.write(Array(i).join(options.incomplete));
-    process.stdout.write(color('progress', options.close));
+    process.stdout.write(color("progress", options.close));
     if (options.verbose) {
-      process.stdout.write(color('progress', ' ' + complete + ' of ' + total));
+      process.stdout.write(color("progress", " " + complete + " of " + total));
     }
   });
 
   // tests are complete, output some stats
   // and the failures if any
-  runner.once(EVENT_RUN_END, function() {
+  runner.once(EVENT_RUN_END, function () {
     cursor.show();
-    process.stdout.write('\n');
+    process.stdout.write("\n");
     self.epilogue();
   });
 }
@@ -101,4 +106,4 @@ function Progress(runner, options) {
  */
 inherits(Progress, Base);
 
-Progress.description = 'a progress bar';
+Progress.description = "a progress bar";

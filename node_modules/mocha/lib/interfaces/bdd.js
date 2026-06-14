@@ -1,8 +1,12 @@
-'use strict';
+"use strict";
 
-var Test = require('../test');
-var EVENT_FILE_PRE_REQUIRE = require('../suite').constants
-  .EVENT_FILE_PRE_REQUIRE;
+/**
+ * @typedef {import('../suite.js')} Suite
+ */
+
+var Test = require("../test");
+var EVENT_FILE_PRE_REQUIRE =
+  require("../suite").constants.EVENT_FILE_PRE_REQUIRE;
 
 /**
  * BDD-style interface:
@@ -24,8 +28,8 @@ var EVENT_FILE_PRE_REQUIRE = require('../suite').constants
 module.exports = function bddInterface(suite) {
   var suites = [suite];
 
-  suite.on(EVENT_FILE_PRE_REQUIRE, function(context, file, mocha) {
-    var common = require('./common')(suites, context, mocha);
+  suite.on(EVENT_FILE_PRE_REQUIRE, function (context, file, mocha) {
+    var common = require("./common")(suites, context, mocha);
 
     context.before = common.before;
     context.after = common.after;
@@ -38,11 +42,11 @@ module.exports = function bddInterface(suite) {
      * and/or tests.
      */
 
-    context.describe = context.context = function(title, fn) {
+    context.describe = context.context = function (title, fn) {
       return common.suite.create({
-        title: title,
-        file: file,
-        fn: fn
+        title,
+        file,
+        fn,
       });
     };
 
@@ -50,26 +54,26 @@ module.exports = function bddInterface(suite) {
      * Pending describe.
      */
 
-    context.xdescribe = context.xcontext = context.describe.skip = function(
-      title,
-      fn
-    ) {
-      return common.suite.skip({
-        title: title,
-        file: file,
-        fn: fn
-      });
-    };
+    context.xdescribe =
+      context.xcontext =
+      context.describe.skip =
+        function (title, fn) {
+          return common.suite.skip({
+            title,
+            file,
+            fn,
+          });
+        };
 
     /**
      * Exclusive suite.
      */
 
-    context.describe.only = function(title, fn) {
+    context.describe.only = function (title, fn) {
       return common.suite.only({
-        title: title,
-        file: file,
-        fn: fn
+        title,
+        file,
+        fn,
       });
     };
 
@@ -79,7 +83,7 @@ module.exports = function bddInterface(suite) {
      * acting as a thunk.
      */
 
-    context.it = context.specify = function(title, fn) {
+    context.it = context.specify = function (title, fn) {
       var suite = suites[0];
       if (suite.isPending()) {
         fn = null;
@@ -94,7 +98,7 @@ module.exports = function bddInterface(suite) {
      * Exclusive test-case.
      */
 
-    context.it.only = function(title, fn) {
+    context.it.only = function (title, fn) {
       return common.test.only(mocha, context.it(title, fn));
     };
 
@@ -102,17 +106,13 @@ module.exports = function bddInterface(suite) {
      * Pending test case.
      */
 
-    context.xit = context.xspecify = context.it.skip = function(title) {
-      return context.it(title);
-    };
-
-    /**
-     * Number of attempts to retry.
-     */
-    context.it.retries = function(n) {
-      context.retries(n);
-    };
+    context.xit =
+      context.xspecify =
+      context.it.skip =
+        function (title) {
+          return context.it(title);
+        };
   });
 };
 
-module.exports.description = 'BDD or RSpec style [default]';
+module.exports.description = "BDD or RSpec style [default]";

@@ -1,0 +1,49 @@
+# CI - Execução por Push
+
+name: 'N5 - Execução por Push'
+
+# gatilho: executa quando houver push
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  automated-tests:
+    name: 'Executar testes automatizados'
+    runs-on: ubuntu-latest
+
+    steps:
+      # clona o projeto
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # instala o Node.js
+      - name: Configurando Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      # instala o Yarn
+      - name: Instalando Yarn
+        run: npm install -g yarn
+
+      # instala as dependências
+      - name: Instalando dependências
+        run: yarn
+
+      # instala os browsers do Playwright
+      - name: Instalando Browsers do Playwright
+        run: yarn playwright install
+
+      # executa os testes automatizados
+      - name: Executando testes automatizados
+        run: yarn run e2e
+
+      # salva o relatório dos testes
+      - name: Salvando relatório dos testes
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: relatorio-testes-automatizados
+          path: ./playwright-report

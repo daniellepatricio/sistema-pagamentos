@@ -1,4 +1,10 @@
-'use strict';
+"use strict";
+
+/**
+ * @typedef {import('../runner.js')} Runner
+ * @typedef {import('../test.js')} Test
+ */
+
 /**
  * @module TAP
  */
@@ -6,16 +12,16 @@
  * Module dependencies.
  */
 
-var util = require('util');
-var Base = require('./base');
-var constants = require('../runner').constants;
+var util = require("node:util");
+var Base = require("./base");
+var constants = require("../runner").constants;
 var EVENT_TEST_PASS = constants.EVENT_TEST_PASS;
 var EVENT_TEST_FAIL = constants.EVENT_TEST_FAIL;
 var EVENT_RUN_BEGIN = constants.EVENT_RUN_BEGIN;
 var EVENT_RUN_END = constants.EVENT_RUN_END;
 var EVENT_TEST_PENDING = constants.EVENT_TEST_PENDING;
 var EVENT_TEST_END = constants.EVENT_TEST_END;
-var inherits = require('../utils').inherits;
+var inherits = require("../utils").inherits;
 var sprintf = util.format;
 
 /**
@@ -40,7 +46,7 @@ function TAP(runner, options) {
   var self = this;
   var n = 1;
 
-  var tapVersion = '12';
+  var tapVersion = "12";
   if (options && options.reporterOptions) {
     if (options.reporterOptions.tapVersion) {
       tapVersion = options.reporterOptions.tapVersion.toString();
@@ -49,29 +55,27 @@ function TAP(runner, options) {
 
   this._producer = createProducer(tapVersion);
 
-  runner.once(EVENT_RUN_BEGIN, function() {
-    var ntests = runner.grepTotal(runner.suite);
+  runner.once(EVENT_RUN_BEGIN, function () {
     self._producer.writeVersion();
-    self._producer.writePlan(ntests);
   });
 
-  runner.on(EVENT_TEST_END, function() {
+  runner.on(EVENT_TEST_END, function () {
     ++n;
   });
 
-  runner.on(EVENT_TEST_PENDING, function(test) {
+  runner.on(EVENT_TEST_PENDING, function (test) {
     self._producer.writePending(n, test);
   });
 
-  runner.on(EVENT_TEST_PASS, function(test) {
+  runner.on(EVENT_TEST_PASS, function (test) {
     self._producer.writePass(n, test);
   });
 
-  runner.on(EVENT_TEST_FAIL, function(test, err) {
+  runner.on(EVENT_TEST_FAIL, function (test, err) {
     self._producer.writeFail(n, test, err);
   });
 
-  runner.once(EVENT_RUN_END, function() {
+  runner.once(EVENT_RUN_END, function () {
     self._producer.writeEpilogue(runner.stats);
   });
 }
@@ -89,7 +93,7 @@ inherits(TAP, Base);
  * @return {String} title with any hash character removed
  */
 function title(test) {
-  return test.fullTitle().replace(/#/g, '');
+  return test.fullTitle().replace(/#/g, "");
 }
 
 /**
@@ -99,9 +103,9 @@ function title(test) {
  * @param {string} format - `printf`-like format string
  * @param {...*} [varArgs] - Format string arguments
  */
-function println(format, varArgs) {
+function println() {
   var vargs = Array.from(arguments);
-  vargs[0] += '\n';
+  vargs[0] += "\n";
   process.stdout.write(sprintf.apply(null, vargs));
 }
 
@@ -115,14 +119,14 @@ function println(format, varArgs) {
  */
 function createProducer(tapVersion) {
   var producers = {
-    '12': new TAP12Producer(),
-    '13': new TAP13Producer()
+    12: new TAP12Producer(),
+    13: new TAP13Producer(),
   };
   var producer = producers[tapVersion];
 
   if (!producer) {
     throw new Error(
-      'invalid or unsupported TAP version: ' + JSON.stringify(tapVersion)
+      "invalid or unsupported TAP version: " + JSON.stringify(tapVersion),
     );
   }
 
@@ -146,7 +150,7 @@ function TAPProducer() {}
  *
  * @abstract
  */
-TAPProducer.prototype.writeVersion = function() {};
+TAPProducer.prototype.writeVersion = function () {};
 
 /**
  * Writes the plan to reporter output stream.
@@ -154,8 +158,8 @@ TAPProducer.prototype.writeVersion = function() {};
  * @abstract
  * @param {number} ntests - Number of tests that are planned to run.
  */
-TAPProducer.prototype.writePlan = function(ntests) {
-  println('%d..%d', 1, ntests);
+TAPProducer.prototype.writePlan = function (ntests) {
+  println("%d..%d", 1, ntests);
 };
 
 /**
@@ -165,8 +169,8 @@ TAPProducer.prototype.writePlan = function(ntests) {
  * @param {number} n - Index of test that passed.
  * @param {Test} test - Instance containing test information.
  */
-TAPProducer.prototype.writePass = function(n, test) {
-  println('ok %d %s', n, title(test));
+TAPProducer.prototype.writePass = function (n, test) {
+  println("ok %d %s", n, title(test));
 };
 
 /**
@@ -176,8 +180,8 @@ TAPProducer.prototype.writePass = function(n, test) {
  * @param {number} n - Index of test that was skipped.
  * @param {Test} test - Instance containing test information.
  */
-TAPProducer.prototype.writePending = function(n, test) {
-  println('ok %d %s # SKIP -', n, title(test));
+TAPProducer.prototype.writePending = function (n, test) {
+  println("ok %d %s # SKIP -", n, title(test));
 };
 
 /**
@@ -186,10 +190,9 @@ TAPProducer.prototype.writePending = function(n, test) {
  * @abstract
  * @param {number} n - Index of test that failed.
  * @param {Test} test - Instance containing test information.
- * @param {Error} err - Reason the test failed.
  */
-TAPProducer.prototype.writeFail = function(n, test, err) {
-  println('not ok %d %s', n, title(test));
+TAPProducer.prototype.writeFail = function (n, test) {
+  println("not ok %d %s", n, title(test));
 };
 
 /**
@@ -198,12 +201,13 @@ TAPProducer.prototype.writeFail = function(n, test, err) {
  * @abstract
  * @param {Object} stats - Object containing run statistics.
  */
-TAPProducer.prototype.writeEpilogue = function(stats) {
+TAPProducer.prototype.writeEpilogue = function (stats) {
   // :TBD: Why is this not counting pending tests?
-  println('# tests ' + (stats.passes + stats.failures));
-  println('# pass ' + stats.passes);
+  println("# tests " + (stats.passes + stats.failures));
+  println("# pass " + stats.passes);
   // :TBD: Why are we not showing pending results?
-  println('# fail ' + stats.failures);
+  println("# fail " + stats.failures);
+  this.writePlan(stats.passes + stats.failures + stats.pending);
 };
 
 /**
@@ -223,13 +227,13 @@ function TAP12Producer() {
    * Writes that test failed to reporter output stream, with error formatting.
    * @override
    */
-  this.writeFail = function(n, test, err) {
+  this.writeFail = function (n, test, err) {
     TAPProducer.prototype.writeFail.call(this, n, test, err);
     if (err.message) {
-      println(err.message.replace(/^/gm, '  '));
+      println(err.message.replace(/^/gm, "  "));
     }
     if (err.stack) {
-      println(err.stack.replace(/^/gm, '  '));
+      println(err.stack.replace(/^/gm, "  "));
     }
   };
 }
@@ -256,33 +260,33 @@ function TAP13Producer() {
    * Writes the TAP version to reporter output stream.
    * @override
    */
-  this.writeVersion = function() {
-    println('TAP version 13');
+  this.writeVersion = function () {
+    println("TAP version 13");
   };
 
   /**
    * Writes that test failed to reporter output stream, with error formatting.
    * @override
    */
-  this.writeFail = function(n, test, err) {
+  this.writeFail = function (n, test, err) {
     TAPProducer.prototype.writeFail.call(this, n, test, err);
     var emitYamlBlock = err.message != null || err.stack != null;
     if (emitYamlBlock) {
-      println(indent(1) + '---');
+      println(indent(1) + "---");
       if (err.message) {
-        println(indent(2) + 'message: |-');
+        println(indent(2) + "message: |-");
         println(err.message.replace(/^/gm, indent(3)));
       }
       if (err.stack) {
-        println(indent(2) + 'stack: |-');
+        println(indent(2) + "stack: |-");
         println(err.stack.replace(/^/gm, indent(3)));
       }
-      println(indent(1) + '...');
+      println(indent(1) + "...");
     }
   };
 
   function indent(level) {
-    return Array(level + 1).join('  ');
+    return Array(level + 1).join("  ");
   }
 }
 
@@ -291,4 +295,4 @@ function TAP13Producer() {
  */
 inherits(TAP13Producer, TAPProducer);
 
-TAP.description = 'TAP-compatible output';
+TAP.description = "TAP-compatible output";

@@ -1,4 +1,9 @@
-'use strict';
+"use strict";
+
+/**
+ * @typedef {import('../runner.js')} Runner
+ */
+
 /**
  * @module Dot
  */
@@ -6,9 +11,9 @@
  * Module dependencies.
  */
 
-var Base = require('./base');
-var inherits = require('../utils').inherits;
-var constants = require('../runner').constants;
+var Base = require("./base");
+var inherits = require("../utils").inherits;
+var constants = require("../runner").constants;
 var EVENT_TEST_PASS = constants.EVENT_TEST_PASS;
 var EVENT_TEST_FAIL = constants.EVENT_TEST_FAIL;
 var EVENT_RUN_BEGIN = constants.EVENT_RUN_BEGIN;
@@ -38,37 +43,37 @@ function Dot(runner, options) {
   var width = (Base.window.width * 0.75) | 0;
   var n = -1;
 
-  runner.on(EVENT_RUN_BEGIN, function() {
-    process.stdout.write('\n');
+  runner.on(EVENT_RUN_BEGIN, function () {
+    process.stdout.write("\n");
   });
 
-  runner.on(EVENT_TEST_PENDING, function() {
+  runner.on(EVENT_TEST_PENDING, function () {
     if (++n % width === 0) {
-      process.stdout.write('\n  ');
+      process.stdout.write("\n  ");
     }
-    process.stdout.write(Base.color('pending', Base.symbols.comma));
+    process.stdout.write(Base.color("pending", Base.symbols.comma));
   });
 
-  runner.on(EVENT_TEST_PASS, function(test) {
+  runner.on(EVENT_TEST_PASS, function (test) {
     if (++n % width === 0) {
-      process.stdout.write('\n  ');
+      process.stdout.write("\n  ");
     }
-    if (test.speed === 'slow') {
-      process.stdout.write(Base.color('bright yellow', Base.symbols.dot));
+    if (test.speed === "slow") {
+      process.stdout.write(Base.color("bright yellow", Base.symbols.dot));
     } else {
       process.stdout.write(Base.color(test.speed, Base.symbols.dot));
     }
   });
 
-  runner.on(EVENT_TEST_FAIL, function() {
+  runner.on(EVENT_TEST_FAIL, function () {
     if (++n % width === 0) {
-      process.stdout.write('\n  ');
+      process.stdout.write("\n  ");
     }
-    process.stdout.write(Base.color('fail', Base.symbols.bang));
+    process.stdout.write(Base.color("fail", Base.symbols.bang));
   });
 
-  runner.once(EVENT_RUN_END, function() {
-    process.stdout.write('\n');
+  runner.once(EVENT_RUN_END, function () {
+    process.stdout.write("\n");
     self.epilogue();
   });
 }
@@ -78,4 +83,4 @@ function Dot(runner, options) {
  */
 inherits(Dot, Base);
 
-Dot.description = 'dot matrix representation';
+Dot.description = "dot matrix representation";
