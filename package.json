@@ -3,15 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=20"
+  },
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "mocha test/**/*.test.js",
-    "test:allure": "mocha test/**/*.test.js --reporter allure-mocha",
-    "allure:generate": "allure generate allure-results --clean -o allure-report",
-    "allure:open": "allure open allure-report",
-    "report": "yarn test:allure && yarn allure:generate && yarn allure:open"
+    "test:allure": "node scripts/allure-run.js",
+    "allure:generate": "node scripts/allure-generate.js",
+    "allure:open": "node scripts/allure-open.js",
+    "allure:serve": "node scripts/allure-serve.js",
+    "report": "yarn test:allure && yarn allure:generate"
   },
   "keywords": [],
   "author": "",
