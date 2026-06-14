@@ -61,7 +61,7 @@ yarn allure:generate
 
 Será criada a pasta:
 
-- allure-report/
+- allure-reports/
 
 com o relatório consolidado.
 
@@ -108,6 +108,6 @@ yarn report
 
 ✔ Resultados gerados em allure-results
 
-✔ Relatório HTML criado em allure-report
+✔ Relatório HTML criado em allure-reports
 
 ✔ Relatório aberto no navegador

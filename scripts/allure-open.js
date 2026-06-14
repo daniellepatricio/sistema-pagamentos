@@ -2,7 +2,7 @@ const { existsSync, readFileSync } = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const latestPath = path.join('allure-report', 'latest.json');
+const latestPath = path.join('allure-reports', 'latest.json');
 
 if (!existsSync(latestPath)) {
   console.error('Nenhum relatorio Allure encontrado. Rode yarn allure:generate antes.');

@@ -2,7 +2,7 @@ const { createReadStream, existsSync, readFileSync, statSync } = require('fs');
 const { createServer } = require('http');
 const path = require('path');
 
-const latestPath = path.join('allure-report', 'latest.json');
+const latestPath = path.join('allure-reports', 'latest.json');
 
 if (!existsSync(latestPath)) {
   console.error('Nenhum relatorio Allure encontrado. Rode yarn report antes.');

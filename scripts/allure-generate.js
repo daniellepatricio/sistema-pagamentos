@@ -10,11 +10,11 @@ if (!existsSync(latestPath)) {
 }
 
 const { runId, resultsDir } = JSON.parse(readFileSync(latestPath, 'utf8'));
-const reportDir = path.join('allure-report', runId);
+const reportDir = path.join('allure-reports', runId);
 
-mkdirSync('allure-report', { recursive: true });
+mkdirSync('allure-reports', { recursive: true });
 writeFileSync(
-  path.join('allure-report', 'latest.json'),
+  path.join('allure-reports', 'latest.json'),
   JSON.stringify({ runId, reportDir }, null, 2)
 );
 

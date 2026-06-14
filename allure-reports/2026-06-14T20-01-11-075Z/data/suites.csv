@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","0","deve retornar mensagem quando não houver pagamento realizado","ServicoPagamento","2026-06-14","passed","2026-06-14","","","",""
+"","0","deve realizar um pagamento com categoria cara quando valor for maior que 100","ServicoPagamento","2026-06-14","passed","2026-06-14","","","",""
+"","2","deve realizar um pagamento com categoria padrão quando valor for menor ou igual a 100","ServicoPagamento","2026-06-14","passed","2026-06-14","","","",""
+"","0","deve consultar apenas o último pagamento realizado","ServicoPagamento","2026-06-14","passed","2026-06-14","","","",""
