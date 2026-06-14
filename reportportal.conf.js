@@ -1,15 +1,22 @@
-const RPClient = require('@reportportal/client-javascript');
+const requiredEnv = ['RP_ENDPOINT', 'RP_API_KEY', 'RP_PROJECT'];
 
 module.exports = {
-  token: 'SEU_TOKEN',
-  endpoint: 'https://reportportal.seudominio.com/api/v1',
-  launch: 'Mocha Launch',
-  project: 'default_personal',
-  description: 'Execução automatizada com Mocha',
-  attributes: [
-    {
-      key: 'framework',
-      value: 'mocha'
-    }
-  ]
+  missingRequiredEnv: requiredEnv.filter((name) => !process.env[name]),
+  config: {
+    apiKey: process.env.RP_API_KEY,
+    endpoint: process.env.RP_ENDPOINT,
+    project: process.env.RP_PROJECT,
+    launch: process.env.RP_LAUNCH || 'Sistema Pagamentos - Mocha',
+    description: 'Execucao automatizada com Mocha',
+    attributes: [
+      {
+        key: 'framework',
+        value: 'mocha'
+      },
+      {
+        key: 'type',
+        value: 'unit'
+      }
+    ]
+  }
 };

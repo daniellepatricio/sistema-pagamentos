@@ -1,0 +1,52 @@
+# CI - Testes Automatizados com Relatório Allure
+
+name: CI - Testes Automatizados
+
+on:
+  # Execução por push
+  push:
+    branches:
+      - master
+
+  # Execução manual
+  workflow_dispatch:
+
+  # Execução agendada
+  schedule:
+    # Executa de hora em hora
+     - cron: '0 * * * *'
+
+jobs:
+  tests:
+    name: Executar testes e gerar relatório
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixar o código do repositório
+      - name: Clonar repositório
+        uses: actions/checkout@v4
+
+      # 2. Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3. Instalar dependências
+      - name: Instalar dependências
+        run: yarn install
+
+      # 4. Executar testes com Allure
+      - name: Executar testes automatizados
+        run: yarn test:allure
+
+      # 5. Gerar relatório Allure
+      - name: Gerar relatório Allure
+        run: yarn allure:generate
+
+      # 6. Publicar relatório como artefato da pipeline
+      - name: Publicar relatório Allure
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
