@@ -8,12 +8,11 @@ Este projeto tem como objetivo praticar e demonstrar conhecimentos em:
 - Lógica de programação
 - Testes de código utilizando Mocha e Node Assert
 - Geração de relatórios de execução de testes com Allure Report;
-- Integração contínua (CI);
+- Integração contínua (CI) com GitHub Actions;
 - Versionamento de código utilizando Git e GitHub.
 
 
 ## Funcionalidades:
-
 - Realizar pagamentos;
 - Consultar o último pagamento realizado.
 
